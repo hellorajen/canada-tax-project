@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="calculator-form">
+    <h2>Enter Your Tax Information</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="employment_income">Employment Income ($):</label>
+            <input type="number" step="0.01" id="employment_income" name="employment_income" required>
+        </div>
+
+        <div class="form-group">
+            <label for="other_income">Other Income ($):</label>
+            <input type="number" step="0.01" id="other_income" name="other_income" required>
+        </div>
+
+        <div class="form-group">
+            <label for="rrsp_contributions">RRSP Contributions ($):</label>
+            <input type="number" step="0.01" id="rrsp_contributions" name="rrsp_contributions" required>
+        </div>
+
+        <button type="submit">Calculate Taxes</button>
+    </form>
+</div>
+{% endblock %}

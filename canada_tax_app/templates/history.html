@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="history">
+    <h2>Calculation History</h2>
+
+    {% if calculations %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date/Time</th>
+                <th>Employment Income</th>
+                <th>Other Income</th>
+                <th>RRSP</th>
+                <th>Federal Tax</th>
+                <th>Ontario Tax</th>
+                <th>Total Tax</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for calc in calculations %}
+            <tr>
+                <td>{{ calc['timestamp'] }}</td>
+                <td>${{ "%.2f"|format(calc['employment_income']) }}</td>
+                <td>${{ "%.2f"|format(calc['other_income']) }}</td>
+                <td>${{ "%.2f"|format(calc['rrsp_contributions']) }}</td>
+                <td>${{ "%.2f"|format(calc['federal_tax']) }}</td>
+                <td>${{ "%.2f"|format(calc['ontario_tax']) }}</td>
+                <td>${{ "%.2f"|format(calc['total_tax']) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No calculations found in history.</p>
+    {% endif %}
+</div>
+{% endblock %}
