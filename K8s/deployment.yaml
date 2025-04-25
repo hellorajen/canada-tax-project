@@ -13,10 +13,10 @@ spec:
         app: tax-app
     spec:
       containers:
-      - name: app
-        image: your-dockerhub/canada-tax-app:latest
-        ports:
-        - containerPort: 5000
-        envFrom:
-        - configMapRef:
-            name: tax-app-config
+        - name: app
+          image: hellorajen/canada-tax-app:latest
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: tax-app-config
