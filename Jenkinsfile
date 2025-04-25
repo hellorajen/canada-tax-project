@@ -1,19 +1,16 @@
 pipeline {
     agent any
-    
     environment {
-        DOCKER_IMAGE = 'canada-tax-app'
+        DOCKER_IMAGE = 'your-dockerhub/canada-tax-app'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
+        K8S_NAMESPACE = 'tax-app'
     }
-    
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', 
-                url: 'https://github.com/yourusername/canada-tax-project.git'
+                git branch: 'main', url: 'https://github.com/yourusername/Canada-Tax-Project.git'
             }
         }
-        
         stage('Build Docker Image') {
             steps {
                 script {
@@ -21,54 +18,31 @@ pipeline {
                 }
             }
         }
-        
         stage('Run Tests') {
             steps {
-                script {
-                    // Example: Run Python tests
-                    sh 'python -m pytest tests/'
-                    
-                    // Or run tests inside the container
-                    // docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").inside {
-                    //     sh 'python -m pytest tests/'
-                    // }
-                }
+                sh 'python -m pytest tests/'  // Add your tests
             }
         }
-        
         stage('Push to Registry') {
-            when {
-                branch 'main'
-            }
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-creds') {
                         docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
                         docker.image("${DOCKER_IMAGE}:latest").push()
                     }
                 }
             }
         }
-        
-        stage('Deploy') {
+        stage('Deploy to Kubernetes') {
             when {
                 branch 'main'
             }
             steps {
-                // Add your deployment steps here
-                // Example: SSH to production server and run the container
+                 sh """
+                 kubectl apply -f k8s/deployment.yaml
+                  kubectl apply -f k8s/service.yaml
+                  """
             }
-        }
-    }
-    
-    post {
-        always {
-            // Clean up
-            sh 'docker system prune -f'
-        }
-        failure {
-            // Notify on failure
-            emailext body: 'Build failed!', subject: 'Build Failed', to: 'team@example.com'
         }
     }
 }

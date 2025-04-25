@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canada-tax-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tax-app
+  template:
+    metadata:
+      labels:
+        app: tax-app
+    spec:
+      containers:
+      - name: app
+        image: your-dockerhub/canada-tax-app:latest
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - configMapRef:
+            name: tax-app-config
