@@ -1,20 +1,18 @@
-# Use an official Python runtime as a parent image
 FROM python:3.12-slim
 
-# Set the working directory in the container
+# Set working directory (will create /app in container)
 WORKDIR /app
 
-# Copy the current directory contents into the container
-COPY . /app
+# Install dependencies first (caching optimization)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
+# Copy ALL files (except .dockerignore exclusions)
+COPY . .
 
-# Make port 5000 available to the world outside this container
+# Set Flask environment variables, # Module-style import
+ENV FLASK_APP=canada_tax_app.app  
+ENV FLASK_DEBUG=1
+
 EXPOSE 5000
-
-# Define environment variable
-ENV FLASK_APP=app.py
-
-# Run app.py when the container launches
 CMD ["flask", "run", "--host=0.0.0.0"]
